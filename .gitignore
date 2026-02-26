@@ -9,6 +9,12 @@ package-lock.json
 *.swo
 *~
 
+# Claude files
+.claude/settings.local.json
+
+# Git files
+.gitignore
+
 # OS files
 .DS_Store
 Thumbs.db
