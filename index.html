@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>이필승 | Project Manager</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              blue:    '#3b82f6',
+              violet:  '#8b5cf6',
+              emerald: '#34d399',
+            }
+          },
+          animation: {
+            'fade-in-up': 'fadeInUp 0.7s ease forwards',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%':   { opacity: '0', transform: 'translateY(30px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* ── 전역 ── */
+    html { scroll-behavior: smooth; }
+
+    /* 스크롤 바 커스텀 */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #8b5cf6; border-radius: 3px; }
+
+    /* ── 애니메이션 ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
+
+    /* ── 그라디언트 텍스트 ── */
+    .gradient-text {
+      background: linear-gradient(90deg, #60a5fa, #a78bfa, #34d399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── 버튼 그라디언트 ── */
+    .btn-primary {
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.85; transform: translateY(-2px); }
+
+    /* ── 카드 호버 ── */
+    .card-hover {
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(139,92,246,0.2);
+    }
+
+    /* ── 네비 활성 링크 ── */
+    .nav-link { position: relative; }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: -3px;
+      width: 0; height: 2px;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after,
+    .nav-link.active::after { width: 100%; }
+
+    /* ── 스킬 뱃지 ── */
+    .skill-badge {
+      background: rgba(30,41,59,0.8);
+      border: 1px solid rgba(139,92,246,0.3);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .skill-badge:hover {
+      border-color: #8b5cf6;
+      transform: translateY(-3px);
+    }
+
+    /* ── Hero 배경 파티클(간단 CSS 효과) ── */
+    .hero-bg {
+      background: radial-gradient(ellipse at 20% 50%, rgba(59,130,246,0.40) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(139,92,246,0.40) 0%, transparent 60%),
+                  radial-gradient(ellipse at 60% 80%, rgba(52,211,153,0.25) 0%, transparent 50%),
+                  #2d5fa8;
+    }
+
+    /* ── 모바일 메뉴 ── */
+    #mobile-menu {
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+    }
+    #mobile-menu.open {
+      max-height: 300px;
+      opacity: 1;
+    }
+
+    /* ── Contact 링크 ── */
+    .contact-link {
+      transition: color 0.2s;
+    }
+    .contact-link:hover { color: #a78bfa; }
+  </style>
+</head>
+
+<body class="bg-slate-900 text-white font-sans antialiased">
+
+<!-- ════════════════════════════════════════════════════════════
+     NAV
+════════════════════════════════════════════════════════════ -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+
+    <!-- 로고 -->
+    <a href="#hero" class="text-2xl font-bold gradient-text tracking-wide">이필승</a>
+
+    <!-- 데스크톱 메뉴 -->
+    <ul class="hidden md:flex items-center gap-8 text-slate-300 text-base font-medium">
+      <li><a href="#about"    class="nav-link hover:text-white transition-colors">About</a></li>
+      <li><a href="#skills"   class="nav-link hover:text-white transition-colors">Skills</a></li>
+      <li><a href="#projects" class="nav-link hover:text-white transition-colors">Projects</a></li>
+      <li><a href="#contact"  class="nav-link hover:text-white transition-colors">Contact</a></li>
+    </ul>
+
+    <!-- 햄버거 버튼 (모바일) -->
+    <button id="hamburger" class="md:hidden flex flex-col gap-1.5 p-2" aria-label="메뉴 열기">
+      <span class="block w-6 h-0.5 bg-slate-300 transition-all duration-300" id="bar1"></span>
+      <span class="block w-6 h-0.5 bg-slate-300 transition-all duration-300" id="bar2"></span>
+      <span class="block w-6 h-0.5 bg-slate-300 transition-all duration-300" id="bar3"></span>
+    </button>
+  </div>
+
+  <!-- 모바일 드롭다운 메뉴 -->
+  <div id="mobile-menu" class="md:hidden bg-slate-800/95 backdrop-blur-sm border-t border-slate-700">
+    <ul class="flex flex-col px-6 py-4 gap-4 text-slate-300 font-medium">
+      <li><a href="#about"    class="mobile-nav-link block hover:text-white transition-colors">About</a></li>
+      <li><a href="#skills"   class="mobile-nav-link block hover:text-white transition-colors">Skills</a></li>
+      <li><a href="#projects" class="mobile-nav-link block hover:text-white transition-colors">Projects</a></li>
+      <li><a href="#contact"  class="mobile-nav-link block hover:text-white transition-colors">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════════════════ -->
+<section id="hero" class="hero-bg min-h-screen flex items-center justify-center text-center px-6">
+  <div class="max-w-3xl mx-auto">
+    <!-- 태그라인 -->
+    <p class="reveal text-emerald-400 text-sm font-semibold tracking-widest uppercase mb-4">
+      Project Manager
+    </p>
+
+    <!-- 메인 타이틀 -->
+    <h1 class="reveal reveal-delay-1 text-6xl md:text-7xl font-extrabold mb-6 leading-tight">
+      <span class="gradient-text">이필승</span>
+    </h1>
+
+    <!-- 부제목 -->
+    <p class="reveal reveal-delay-2 text-xl md:text-2xl text-slate-300 mb-4 leading-relaxed">
+      비즈니스(SI)를 이해하는<br class="sm:hidden" /> 경험 풍부한 IT PM
+    </p>
+
+    <!-- 설명 -->
+    <p class="reveal reveal-delay-3 text-slate-400 text-base md:text-lg mb-10 max-w-xl mx-auto leading-relaxed">
+      개발과 비즈니스를 잇는 가교 역할을 하며,<br />
+      고객 요구사항을 기술로 실현하는 프로젝트 매니저입니다.
+    </p>
+
+    <!-- CTA 버튼 -->
+    <div class="reveal reveal-delay-4 flex flex-wrap gap-4 justify-center">
+      <a href="#contact"
+         class="btn-primary px-8 py-3 rounded-full text-white font-semibold shadow-lg">
+        연락하기 →
+      </a>
+      <a href="#projects"
+         class="px-8 py-3 rounded-full border border-slate-600 text-slate-300
+                hover:border-violet-500 hover:text-white transition-all duration-200 font-semibold">
+        프로젝트 보기
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     ABOUT
+════════════════════════════════════════════════════════════ -->
+<section id="about" class="py-24 px-6">
+  <div class="max-w-5xl mx-auto">
+
+    <!-- 섹션 헤더 -->
+    <div class="reveal text-center mb-16">
+      <p class="text-violet-400 text-sm font-semibold tracking-widest uppercase mb-3">About Me</p>
+      <h2 class="text-4xl font-bold text-white">소개</h2>
+      <div class="mt-4 mx-auto w-16 h-1 rounded-full bg-gradient-to-r from-blue-500 to-violet-500"></div>
+    </div>
+
+    <div class="reveal reveal-delay-1 grid md:grid-cols-2 gap-12 items-center">
+
+      <!-- 아이콘/이미지 영역 -->
+      <div class="flex justify-center">
+        <div class="relative">
+          <!-- 아바타 플레이스홀더 -->
+          <div class="w-56 h-56 rounded-2xl bg-gradient-to-br from-blue-500/20 to-violet-500/20
+                      border border-violet-500/30 flex items-center justify-center shadow-2xl">
+            <svg class="w-24 h-24 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
+          </div>
+          <!-- 장식 원 -->
+          <div class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-emerald-400/30 border border-emerald-400/50"></div>
+          <div class="absolute -bottom-3 -left-3 w-6 h-6 rounded-full bg-blue-400/30 border border-blue-400/50"></div>
+        </div>
+      </div>
+
+      <!-- 소개 텍스트 -->
+      <div class="space-y-5">
+        <p class="text-slate-300 text-lg leading-relaxed">
+          안녕하세요! SI 비즈니스 환경에서 다수의 프로젝트를 성공적으로 이끌어온
+          <span class="text-white font-semibold">이필승</span>입니다.
+        </p>
+        <p class="text-slate-400 leading-relaxed">
+          개발팀과 고객 사이에서 요구사항을 정확히 분석하고, 일정과 품질을 관리하며
+          프로젝트를 완수하는 데 열정을 가지고 있습니다.
+        </p>
+        <p class="text-slate-400 leading-relaxed">
+          Spring Boot, React 등 기술 스택에 대한 이해를 바탕으로
+          개발자와 원활히 소통하고 실현 가능한 계획을 수립합니다.
+        </p>
+
+        <!-- 주요 지표 -->
+        <div class="grid grid-cols-3 gap-4 pt-4">
+          <div class="text-center p-4 rounded-xl bg-slate-800/60 border border-slate-700">
+            <p class="text-2xl font-bold gradient-text">10+</p>
+            <p class="text-slate-400 text-xs mt-1">년 경력</p>
+          </div>
+          <div class="text-center p-4 rounded-xl bg-slate-800/60 border border-slate-700">
+            <p class="text-2xl font-bold gradient-text">50+</p>
+            <p class="text-slate-400 text-xs mt-1">프로젝트</p>
+          </div>
+          <div class="text-center p-4 rounded-xl bg-slate-800/60 border border-slate-700">
+            <p class="text-2xl font-bold gradient-text">SI</p>
+            <p class="text-slate-400 text-xs mt-1">전문 분야</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     SKILLS
+════════════════════════════════════════════════════════════ -->
+<section id="skills" class="py-24 px-6 bg-slate-800/30">
+  <div class="max-w-5xl mx-auto">
+
+    <!-- 섹션 헤더 -->
+    <div class="reveal text-center mb-16">
+      <p class="text-violet-400 text-sm font-semibold tracking-widest uppercase mb-3">Skills</p>
+      <h2 class="text-4xl font-bold text-white">기술 스택</h2>
+      <div class="mt-4 mx-auto w-16 h-1 rounded-full bg-gradient-to-r from-blue-500 to-violet-500"></div>
+    </div>
+
+    <!-- 카테고리별 스킬 -->
+
+    <!-- Backend -->
+    <div class="reveal mb-10">
+      <h3 class="text-emerald-400 text-sm font-semibold tracking-widest uppercase mb-5 flex items-center gap-2">
+        <span class="w-6 h-px bg-emerald-400 inline-block"></span>
+        Backend
+      </h3>
+      <div class="flex flex-wrap gap-4">
+
+        <!-- Spring Boot -->
+        <div class="skill-badge flex items-center gap-3 px-5 py-3 rounded-xl">
+          <svg class="w-6 h-6 text-green-400" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.59 5.41C20.21 5.03 19.7 4.8 19.17 4.8c-.53 0-1.04.23-1.41.61l-1.06 1.06
+                     C15.54 5.6 13.84 5 12 5 7.03 5 3 9.03 3 14s4.03 9 9 9 9-4.03 9-9c0-1.84-.6-3.54-1.47-4.7l1.06-1.06
+                     c.78-.78.78-2.05 0-2.83zM12 21c-3.86 0-7-3.14-7-7s3.14-7 7-7c1.45 0 2.79.45 3.9 1.2L7.2 16.9
+                     C7.75 19.24 9.69 21 12 21zm3.1-1.2l-8.7-8.7C7.45 10.79 7 9.45 7 8c0-.36.03-.71.09-1.05
+                     L15.1 14.96c-.09.34-.1.69-.1 1.04 0 1.45.55 2.79 1.1 3.8z"/>
+          </svg>
+          <span class="text-slate-200 font-medium text-sm">Spring Boot</span>
+        </div>
+
+        <!-- Java -->
+        <div class="skill-badge flex items-center gap-3 px-5 py-3 rounded-xl">
+          <svg class="w-6 h-6 text-orange-400" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8.851 18.56s-.917.534.653.714c1.902.218 2.874.187
+                     4.969-.211.0.0.552.346 1.321.646-4.699 2.013-10.633-.118-6.943-1.149
+                     M8.276 15.933s-1.028.761.542.924c2.032.209 3.636.227
+                     6.413-.308.0.0.384.389.987.602-5.679 1.661-12.007.13-7.942-1.218
+                     M13.116 11.475c1.158 1.333-.304 2.533-.304 2.533s2.939-1.518
+                     1.589-3.418c-1.261-1.772-2.228-2.652 3.007-5.688.0-.001-8.216 2.051-4.292 6.573
+                     M19.33 20.504s.679.559-.747.991c-2.712.822-11.288 1.069-13.669.033-.856-.373.75-.89
+                     1.254-.998.527-.114.828-.093.828-.093-.953-.671-6.156 1.317-2.643 1.887
+                     9.546 1.547 17.394-.696 14.977-1.82
+                     M9.292 13.21s-4.362 1.036-1.544 1.412c1.189.159 3.561.123
+                     5.77-.062 1.806-.152 3.618-.477 3.618-.477s-.637.272-1.098.587
+                     c-4.429 1.165-12.986.623-10.522-.568 2.082-1.006 3.776-.892 3.776-.892
+                     M17.116 17.584c4.503-2.34 2.421-4.589.968-4.285-.355.074-.515.138-.515.138
+                     s.132-.207.385-.297c2.875-1.011 5.086 2.981-.928 4.562.0-.001.07-.062.09-.118
+                     M14.401 0s2.494 2.494-2.365 6.33c-3.896 3.077-.888 4.832-.001 6.836
+                     -2.274-2.053-3.943-3.858-2.824-5.539 1.644-2.469 6.197-3.665 5.19-7.627
+                     M9.734 23.924c4.322.277 10.959-.153 11.116-2.198.0.0-.302.775-3.572 1.391
+                     -3.688.694-8.239.613-10.937.168.0-.001.553.457 3.393.639"/>
+          </svg>
+          <span class="text-slate-200 font-medium text-sm">Java</span>
+        </div>
+
+        <!-- Python -->
+        <div class="skill-badge flex items-center gap-3 px-5 py-3 rounded-xl">
+          <svg class="w-6 h-6 text-yellow-400" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M11.914 0C5.82 0 6.2 2.656 6.2 2.656l.007 2.752h5.814v.826H3.9S0 5.789 0 11.969c0 6.18
+                     3.403 5.963 3.403 5.963h2.031v-2.868s-.109-3.402 3.35-3.402h5.762s3.24.052 3.24-3.13V3.13
+                     S18.261 0 11.914 0zm-3.204 1.814a1.044 1.044 0 1 1 0 2.09 1.044 1.044 0 0 1 0-2.09z"/>
+            <path d="M12.086 24c6.094 0 5.714-2.656 5.714-2.656l-.007-2.752h-5.814v-.826h8.121
+                     S24 18.211 24 12.031c0-6.18-3.403-5.963-3.403-5.963h-2.031v2.868s.109 3.402-3.35 3.402
+                     H9.454s-3.24-.052-3.24 3.13v5.402S5.739 24 12.086 24zm3.204-1.814a1.044 1.044 0 1 1
+                     0-2.09 1.044 1.044 0 0 1 0 2.09z"/>
+          </svg>
+          <span class="text-slate-200 font-medium text-sm">Python</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Frontend -->
+    <div class="reveal reveal-delay-1 mb-10">
+      <h3 class="text-blue-400 text-sm font-semibold tracking-widest uppercase mb-5 flex items-center gap-2">
+        <span class="w-6 h-px bg-blue-400 inline-block"></span>
+        Frontend
+      </h3>
+      <div class="flex flex-wrap gap-4">
+
+        <!-- React -->
+        <div class="skill-badge flex items-center gap-3 px-5 py-3 rounded-xl">
+          <svg class="w-6 h-6 text-cyan-400" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M14.23 12.004a2.236 2.236 0 0 1-2.235 2.236 2.236 2.236 0 0 1-2.236-2.236
+                     2.236 2.236 0 0 1 2.235-2.236 2.236 2.236 0 0 1 2.236 2.236zm2.648-10.69
+                     c-1.346 0-3.107.96-4.888 2.622-1.78-1.653-3.542-2.602-4.887-2.602-.41 0-.783.093-1.106.278
+                     -1.375.793-1.683 3.264-.973 6.365C1.98 8.917 0 10.42 0 12.004c0 1.59 1.99 3.097 5.043 4.03
+                     -.704 3.113-.39 5.588.988 6.38.32.187.69.275 1.102.275 1.345 0 3.107-.96 4.888-2.624
+                     1.78 1.654 3.542 2.603 4.887 2.603.41 0 .783-.09 1.106-.275 1.374-.792 1.683-3.263.973-6.365
+                     C22.02 15.096 24 13.59 24 12.004c0-1.59-1.99-3.097-5.043-4.032.704-3.11.39-5.587-.988-6.38
+                     a2.167 2.167 0 0 0-1.088-.278zm-.005 1.09c.728 0 1.215 1.476.948 3.706
+                     -.023.192-.05.39-.085.594a19.775 19.775 0 0 0-2.575-.438 19.83 19.83 0 0 0-1.665-1.976
+                     c1.303-1.242 2.531-1.886 3.377-1.886zm-9.63 0c.845 0 2.073.643 3.376 1.883
+                     a19.683 19.683 0 0 0-1.66 1.977 19.773 19.773 0 0 0-2.575.441c-.036-.204-.063-.402-.086-.596
+                     -.266-2.228.22-3.705.945-3.705zM12 9.018c.477.492.944 1.03 1.4 1.606-.458.576-.926 1.114-1.4 1.607
+                     -.476-.493-.943-1.031-1.4-1.607.457-.575.924-1.113 1.4-1.606zm-2.6.282c.257.466.5.948.73 1.437
+                     -.463.194-.912.41-1.346.645A13.2 13.2 0 0 1 8.6 9.3zm5.2 0c.226.489.47.97.73 1.437-.435.235-.884.45-1.347.645
+                     .231-.49.474-.97.617-2.082zm-5.74 1.437c.346.82.652 1.67.905 2.537-.836.218-1.614.5-2.312.843
+                     a13.52 13.52 0 0 1-.44-3.26c.585-.06 1.19-.1 1.847-.12zm6.27 0c.658.02 1.263.06 1.848.12
+                     a13.52 13.52 0 0 1-.44 3.258 16.3 16.3 0 0 0-2.312-.842c.253-.868.56-1.717.904-2.536zm-9.91.18
+                     c.257-.138.523-.266.794-.386a13.88 13.88 0 0 0 0 2.152c-.27-.12-.537-.248-.793-.385
+                     -.852-.457-1.368-.97-1.368-1.19 0-.22.516-.733 1.368-1.19zm13.55 0c.852.457 1.368.97 1.368 1.19
+                     0 .22-.516.733-1.368 1.19a13.54 13.54 0 0 1-.793.385 13.88 13.88 0 0 0 0-2.152c.27.12.536.248.793.386
+                     zm-9.2 1.97c.434.234.883.45 1.346.645-.23.49-.473.97-.73 1.437a13.2 13.2 0 0 1-.617-2.082zm5.2 0
+                     c-.23.49-.472.97-.73 1.437a19.66 19.66 0 0 0-1.348-.645c.463-.194.912-.41 1.347-.645zm-7.87 1.437
+                     c.698.343 1.476.625 2.31.842a19.78 19.78 0 0 0 .905 2.537 13.2 13.2 0 0 1-1.847-.12 13.52 13.52 0 0 1-.44-3.26
+                     zm10.56 0c-.023.192-.05.39-.085.594-.454.053-.927.09-1.413.116.253-.868.56-1.717.904-2.536a16.3 16.3 0 0 0 .594.826
+                     zm-3.4 1.43c.477-.492.944-1.031 1.4-1.607.476.493.943 1.031 1.4 1.607-.457.576-.924 1.113-1.4 1.607
+                     -.476-.493-.943-1.03-1.4-1.607zm-4.855.005c.476.492.943 1.03 1.4 1.606-.458.576-.926 1.114-1.4 1.607
+                     -.476-.492-.942-1.03-1.4-1.607.457-.575.924-1.113 1.4-1.606zM6.2 15.9a19.683 19.683 0 0 0 1.66 1.976
+                     c-1.303 1.242-2.531 1.886-3.376 1.886-.728 0-1.215-1.476-.948-3.706.023-.192.05-.39.085-.594
+                     a19.775 19.775 0 0 0 2.579.438zm11.6 0c.036.204.063.402.086.596.266 2.228-.22 3.705-.945 3.705
+                     -.845 0-2.073-.643-3.376-1.883a19.683 19.683 0 0 0 1.66-1.977 19.773 19.773 0 0 0 2.575-.441z"/>
+          </svg>
+          <span class="text-slate-200 font-medium text-sm">React</span>
+        </div>
+
+        <!-- HTML5 -->
+        <div class="skill-badge flex items-center gap-3 px-5 py-3 rounded-xl">
+          <svg class="w-6 h-6 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.565-2.438L1.5 0zm7.031 9.75l-.232-2.718
+                     10.059.003.23-2.622L5.412 4.41l.698 8.01h9.126l-.326 3.426-2.91.804-2.955-.81
+                     -.196-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z"/>
+          </svg>
+          <span class="text-slate-200 font-medium text-sm">HTML5</span>
+        </div>
+
+        <!-- CSS3 -->
+        <div class="skill-badge flex items-center gap-3 px-5 py-3 rounded-xl">
+          <svg class="w-6 h-6 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.565-2.438L1.5 0zm17.09 4.413L5.41 4.41l.213 2.622
+                     10.125.002-.255 2.716h-6.64l.24 2.573h6.182l-.366 3.523-2.91.804-2.956-.81-.188-2.11
+                     h-2.61l.29 3.855L12 19.288l5.373-1.53L18.59 4.414z"/>
+          </svg>
+          <span class="text-slate-200 font-medium text-sm">CSS3</span>
+        </div>
+
+        <!-- JavaScript -->
+        <div class="skill-badge flex items-center gap-3 px-5 py-3 rounded-xl">
+          <svg class="w-6 h-6 text-yellow-400" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873
+                     -.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66
+                     .39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78
+                     -.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005
+                     -1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205
+                     .24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336
+                     l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004
+                     .029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805
+                     0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855
+                     -.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675
+                     3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109
+                     0-6.179l.004-.056z"/>
+          </svg>
+          <span class="text-slate-200 font-medium text-sm">JavaScript</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Database -->
+    <div class="reveal reveal-delay-2">
+      <h3 class="text-violet-400 text-sm font-semibold tracking-widest uppercase mb-5 flex items-center gap-2">
+        <span class="w-6 h-px bg-violet-400 inline-block"></span>
+        Database
+      </h3>
+      <div class="flex flex-wrap gap-4">
+
+        <!-- Oracle -->
+        <div class="skill-badge flex items-center gap-3 px-5 py-3 rounded-xl">
+          <svg class="w-6 h-6 text-red-500" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16.412 4.412H7.588C3.399 4.412 0 7.811 0 12s3.399 7.588 7.588 7.588h8.824
+                     C20.601 19.588 24 16.189 24 12s-3.399-7.588-7.588-7.588zm-.177 12.529H7.765
+                     c-2.727 0-4.941-2.214-4.941-4.941s2.214-4.941 4.941-4.941h8.47c2.727 0 4.941 2.214
+                     4.941 4.941s-2.214 4.941-4.941 4.941z"/>
+          </svg>
+          <span class="text-slate-200 font-medium text-sm">Oracle DB</span>
+        </div>
+
+        <!-- MySQL -->
+        <div class="skill-badge flex items-center gap-3 px-5 py-3 rounded-xl">
+          <svg class="w-6 h-6 text-blue-400" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16.405 5.501c-.115 0-.193.014-.274.033v.013h.014c.054.104.146.19.238.275
+                     l.09.079v-.014c.064-.026.1-.1.1-.19l-.014-.023c-.016-.068-.082-.134-.154-.173zm-1.641.013
+                     c-.018.002-.033.009-.048.016l-.025.014v.006c.061.071.15.131.252.14l.037-.002
+                     c.05-.011.086-.052.086-.109l-.005-.019c-.012-.063-.068-.12-.13-.145l-.053-.015
+                     c-.014-.003-.03-.004-.044-.004l-.07.118zm5.437 5.05c-.246 0-.425.024-.524.066
+                     l.004-.001-.002.003-.011.013c0 .007.001.01.001.01.014.006.03.007.044.007
+                     .12 0 .248-.076.33-.19a.25.25 0 0 0 .048-.147v-.007l-.032-.022-.052-.003
+                     c-.006-.001-.012-.002-.018-.002l-.032.006-.087.015-.011.002.018.02
+                     c.012.012.027.024.044.033a.38.38 0 0 0 .062.025l.03.006c.01.001.02.001.031.001
+                     l.04-.004.044-.017v.011zm0-.093l-.011.003c-.05.012-.08.05-.08.1
+                     0 .017.004.034.01.048l.022.026c.025.023.063.033.098.033l.026-.002
+                     .022-.006c.04-.016.07-.052.07-.093l-.007-.03-.017-.024-.022-.015
+                     c-.007-.003-.014-.005-.022-.005l-.089.018zm-1.73-5.36l-.027-.001-.012.001
+                     c-.01.002-.02.005-.028.01l-.03.023c-.01.013-.016.028-.016.044l.003.016
+                     .012.024.02.02c.017.01.04.015.06.015l.04-.005c.03-.01.056-.035.056-.063
+                     0-.034-.025-.064-.058-.077l-.02-.007zm1.18 5.5l-.024-.001c-.024.001-.047.009-.066.021
+                     l-.025.023c-.013.017-.021.037-.021.058l.006.029c.02.051.075.088.133.088
+                     l.03-.004c.044-.014.076-.055.076-.1l-.007-.032-.023-.034-.036-.026
+                     c-.018-.011-.04-.016-.063-.016l-.036.004zm2.006-5.218L24 .001H.001L0 24h24V0zm-5.96 9.1
+                     c.019.137.019.274 0 .411l-.002.002c.001.001.001.001 0 .002v.004
+                     c-.034.261-.162.494-.36.658a1.058 1.058 0 0 1-.67.237l-.073-.003
+                     c-.366-.035-.642-.273-.72-.612l-.003-.02c-.015-.105-.012-.21.007-.313
+                     .008-.027.017-.054.028-.08.035-.081.09-.15.162-.198l.054-.025
+                     c.035-.01.07-.015.106-.015.165 0 .322.096.404.246l.027.067
+                     c.012.046.014.094.009.141l-.015.077c-.025.073-.08.134-.152.161l-.037.009
+                     c-.017.003-.034.004-.051.004l-.037-.004c-.054-.012-.1-.046-.124-.095l-.008-.023
+                     c-.004-.024.002-.05.017-.07l.026-.019.034-.006.03.004c.02.008.034.027.034.05
+                     l-.002.02-.011.02-.014.009.004.001c.005-.001.01-.002.016-.002l.027.005
+                     c.031.012.053.04.053.072l-.003.025-.016.025-.023.016c-.02.007-.042.01-.063.01
+                     l-.043-.005c-.077-.024-.133-.09-.143-.17l-.001-.027c0-.07.026-.136.074-.186
+                     l.042-.028c.028-.012.057-.018.088-.018l.056.007.062.025c.078.04.138.109.159.192
+                     l.01.064c.005.067-.007.134-.035.195l-.04.066c-.065.078-.163.124-.265.124l-.06-.006
+                     c-.16-.032-.282-.157-.3-.317l-.002-.047c0-.195.094-.375.252-.484l.065-.031
+                     c.037-.013.076-.02.116-.02.234 0 .434.181.448.414z"/>
+          </svg>
+          <span class="text-slate-200 font-medium text-sm">MySQL</span>
+        </div>
+
+        <!-- PostgreSQL -->
+        <div class="skill-badge flex items-center gap-3 px-5 py-3 rounded-xl">
+          <svg class="w-6 h-6 text-indigo-400" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M23.5607 14.5433c-.2637-.7354-1.0108-1.6133-2.0996-2.3154.0023-.0146.005-.029.007-.043
+                     a7.6984 7.6984 0 0 0 .1464-1.5122c0-4.3556-3.5443-7.8982-7.9012-7.8982-1.7265 0-3.3314.5605-4.636 1.5096
+                     -.8633-.7256-1.9741-1.1631-3.1826-1.1631-2.7314 0-4.9497 2.2183-4.9497 4.9497
+                     0 .977.283 1.8887.7737 2.6518C.8994 11.8433.1406 13.103.0117 14.5082l-.012.1396
+                     c-.0468.5449-.0528.609.0293 1.1016.2657 1.5937 1.2363 2.7744 2.6191 3.2109
+                     .0097.003.0166.005.0254.0078.0654.9541.4248 1.7217 1.0898 2.2734 1.0693.8945 2.6953.9561
+                     4.4365.9561h.0147c1.7618.0049 3.5342-.0556 4.7871-1.1748.6329-.5772.9971-1.3448
+                     1.0566-2.2168.1767-.0654.3535-.1406.5244-.2344 1.0127-.5459 1.543-1.3887 1.7109-2.0684
+                     1.5498-.0253 3.082-.3222 4.2158-1.1075 1.3252-.9199 1.8046-2.5312 1.3818-3.7304z"/>
+          </svg>
+          <span class="text-slate-200 font-medium text-sm">PostgreSQL</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     PROJECTS
+════════════════════════════════════════════════════════════ -->
+<section id="projects" class="py-24 px-6">
+  <div class="max-w-6xl mx-auto">
+
+    <!-- 섹션 헤더 -->
+    <div class="reveal text-center mb-16">
+      <p class="text-violet-400 text-sm font-semibold tracking-widest uppercase mb-3">Projects</p>
+      <h2 class="text-4xl font-bold text-white">프로젝트</h2>
+      <div class="mt-4 mx-auto w-16 h-1 rounded-full bg-gradient-to-r from-blue-500 to-violet-500"></div>
+      <p class="mt-4 text-slate-400">진행했던 주요 프로젝트들입니다.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8">
+
+      <!-- ── PROJECT CARD 1 ── (내용을 수정하려면 이 블록을 편집하세요) -->
+      <article class="reveal card-hover bg-slate-800 rounded-2xl p-6 border border-slate-700 flex flex-col">
+        <!-- 아이콘 -->
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-violet-500/20
+                    border border-blue-500/30 flex items-center justify-center mb-5">
+          <svg class="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414
+                     a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+
+        <!-- 제목 & 설명 -->
+        <h3 class="text-white text-lg font-bold mb-2">한국경제인협회 ITO PM</h3>
+        <p class="text-slate-400 text-sm leading-relaxed flex-1 mb-5">
+          전국경제인연합(현 한국경제인협회)의 IT 아웃소싱 PM으로서 전사 시스템의
+          안정적인 유지보수를 총괄. 장애 대응 체계를 정비하고 서비스 가용성을 지속적으로 개선.
+        </p>
+
+        <!-- 기술 태그 -->
+        <div class="flex flex-wrap gap-2 mb-5">
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-300 border border-blue-500/20">Spring Boot</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-violet-500/10 text-violet-300 border border-violet-500/20">React</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Oracle</span>
+        </div>
+
+        <!-- 링크 -->
+        <a href="#"
+           class="inline-flex items-center gap-2 text-sm font-medium text-violet-400 hover:text-violet-300 transition-colors">
+          자세히 보기
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+      </article>
+
+      <!-- ── PROJECT CARD 2 ── -->
+      <article class="reveal reveal-delay-1 card-hover bg-slate-800 rounded-2xl p-6 border border-slate-700 flex flex-col">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-blue-500/20
+                    border border-emerald-500/30 flex items-center justify-center mb-5">
+          <svg class="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
+          </svg>
+        </div>
+
+        <h3 class="text-white text-lg font-bold mb-2">롯데카드 로컬 App 개발</h3>
+        <p class="text-slate-400 text-sm leading-relaxed flex-1 mb-5">
+          Kakao Maps API를 기반으로 카드 가맹점 위치 탐색 및 혜택 안내 서비스를 개발.
+          SPA 구조로 빠른 화면 전환을 구현하고, 사용자 위치 기반 실시간 매장 추천 기능 제공.
+        </p>
+
+        <div class="flex flex-wrap gap-2 mb-5">
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-300 border border-blue-500/20">Java</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-violet-500/10 text-violet-300 border border-violet-500/20">JSP</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Oracle</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-slate-500/10 text-slate-300 border border-slate-500/20">Spring Framework</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-yellow-500/10 text-yellow-300 border border-yellow-500/20">SPA</span>
+        </div>
+
+        <a href="#"
+           class="inline-flex items-center gap-2 text-sm font-medium text-emerald-400 hover:text-emerald-300 transition-colors">
+          자세히 보기
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+      </article>
+
+      <!-- ── PROJECT CARD 3 ── -->
+      <article class="reveal reveal-delay-2 card-hover bg-slate-800 rounded-2xl p-6 border border-slate-700 flex flex-col">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500/20 to-emerald-500/20
+                    border border-violet-500/30 flex items-center justify-center mb-5">
+          <svg class="w-6 h-6 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2
+                     a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2
+                     a2 2 0 01-2-2z"/>
+          </svg>
+        </div>
+
+        <h3 class="text-white text-lg font-bold mb-2">한화손해보험 디지털 전환 구축</h3>
+        <p class="text-slate-400 text-sm leading-relaxed flex-1 mb-5">
+          다이렉트 홈페이지 및 자동차보험 온라인 가입 시스템 구축. 고객이 대리점 방문 없이
+          보험 가입을 완결할 수 있는 디지털 채널을 설계·개발하여 비대면 전환율 향상에 기여.
+        </p>
+
+        <div class="flex flex-wrap gap-2 mb-5">
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-300 border border-blue-500/20">Java</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-violet-500/10 text-violet-300 border border-violet-500/20">JSP</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Oracle</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-slate-500/10 text-slate-300 border border-slate-500/20">Spring Framework</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-yellow-500/10 text-yellow-300 border border-yellow-500/20">SPA</span>
+        </div>
+
+        <a href="#"
+           class="inline-flex items-center gap-2 text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors">
+          자세히 보기
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+          </svg>
+        </a>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     CONTACT
+════════════════════════════════════════════════════════════ -->
+<section id="contact" class="py-24 px-6 bg-slate-800/30">
+  <div class="max-w-3xl mx-auto text-center">
+
+    <!-- 섹션 헤더 -->
+    <div class="reveal mb-12">
+      <p class="text-violet-400 text-sm font-semibold tracking-widest uppercase mb-3">Contact</p>
+      <h2 class="text-4xl font-bold text-white mb-4">연락하기</h2>
+      <div class="mx-auto w-16 h-1 rounded-full bg-gradient-to-r from-blue-500 to-violet-500"></div>
+      <p class="mt-6 text-slate-400 leading-relaxed">
+        프로젝트 협업이나 취업 기회에 대해 이야기 나누고 싶으시다면<br />
+        언제든지 연락해 주세요.
+      </p>
+    </div>
+
+    <!-- 연락처 카드 -->
+    <div class="reveal reveal-delay-1 bg-slate-800 rounded-2xl p-10 border border-slate-700 shadow-xl">
+
+      <!-- 이메일 -->
+      <div class="flex flex-col sm:flex-row items-center gap-4 mb-8 pb-8 border-b border-slate-700">
+        <div class="w-12 h-12 rounded-xl bg-violet-500/10 border border-violet-500/30 flex items-center justify-center flex-shrink-0">
+          <svg class="w-6 h-6 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <div class="text-center sm:text-left">
+          <p class="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1">이메일</p>
+          <a href="mailto:sisyphus2020@naver.com"
+             class="contact-link text-white font-medium text-lg">
+            sisyphus2020@naver.com
+          </a>
+        </div>
+      </div>
+
+      <!-- 메시지 보내기 버튼 -->
+      <a href="mailto:sisyphus2020@naver.com"
+         class="btn-primary inline-flex items-center gap-4 px-16 py-6 mt-8 rounded-full text-white font-semibold text-lg shadow-lg">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+        </svg>
+        메시지 보내기
+      </a>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════════════ -->
+<footer class="py-8 px-6 border-t border-slate-800">
+  <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+    <p class="text-slate-500 text-sm">© 2026 이필승. All rights reserved.</p>
+    <p class="text-slate-600 text-xs">Built with Tailwind CSS</p>
+  </div>
+</footer>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════════════════ -->
+<script>
+  /* ── 1. 네비바 스크롤 스타일 ── */
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      navbar.classList.add('bg-slate-900/95', 'backdrop-blur-sm', 'border-b', 'border-slate-800', 'shadow-lg');
+    } else {
+      navbar.classList.remove('bg-slate-900/95', 'backdrop-blur-sm', 'border-b', 'border-slate-800', 'shadow-lg');
+    }
+  });
+
+  /* ── 2. 햄버거 메뉴 토글 ── */
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const bar1 = document.getElementById('bar1');
+  const bar2 = document.getElementById('bar2');
+  const bar3 = document.getElementById('bar3');
+
+  hamburger.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    // 아이콘 애니메이션 (X 모양)
+    if (isOpen) {
+      bar1.style.transform = 'rotate(45deg) translate(5px, 5px)';
+      bar2.style.opacity = '0';
+      bar3.style.transform = 'rotate(-45deg) translate(5px, -5px)';
+    } else {
+      bar1.style.transform = '';
+      bar2.style.opacity = '1';
+      bar3.style.transform = '';
+    }
+  });
+
+  // 모바일 메뉴 링크 클릭 시 닫기
+  document.querySelectorAll('.mobile-nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      bar1.style.transform = '';
+      bar2.style.opacity = '1';
+      bar3.style.transform = '';
+    });
+  });
+
+  /* ── 3. Intersection Observer – fade-in 애니메이션 ── */
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  /* ── 4. 활성 네비 링크 하이라이트 ── */
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+        });
+      }
+    });
+  }, { threshold: 0.4, rootMargin: '-80px 0px -80px 0px' });
+
+  sections.forEach(section => sectionObserver.observe(section));
+
+  /* ── 5. Hero 섹션 즉시 reveal ── */
+  window.addEventListener('load', () => {
+    document.querySelectorAll('#hero .reveal').forEach(el => {
+      el.classList.add('visible');
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+.claude-statusline-test.txt
+
+# Screenshots and images
+*.png
+*.jpg
+*.jpeg
