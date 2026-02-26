@@ -7,5 +7,6 @@
     "deny": [],
     "defaultMode": "plan"
   },
-  "outputStyle": "Explainatory"
+  "outputStyle": "Explainatory",
+  "language": "korean"
 }
